@@ -1,9 +1,10 @@
+const bcrypt=require('bcrypt')
+
 const Register=require('../models/register');
 
 exports.postRegister=(req,res,next)=>{
     // console.log("req user",req.user)
-    console.log(req.body);
-    console.log("req,user",req.user);
+    // console.log(req.body);
     const {name,email,phone,password}=req.body
     // console.log(name,email,phone,password);
     // bcrypt.hash(password,10).then(data=>{
@@ -41,11 +42,8 @@ exports.postRegister=(req,res,next)=>{
             res.json({
                 user:data,
                 isSucces:true,
-                message:`User registration successfull....!!`
+                message:`Successfuly signed up....!!`
             })
         })
         .catch(err=>{console.log(err);})
-
-
-    
 }

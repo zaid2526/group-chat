@@ -2,6 +2,7 @@ require('dotenv').config();
 const path=require('path')
 
 const express=require('express')
+const bodyParser=require('body-parser')
 
 //database and models....
 const sequelize = require('./util/database');
@@ -12,6 +13,8 @@ const userRoutes=require('./routes/user.routes')
 
 const app=express()
 
+
+app.use(bodyParser.json())
 const staticPath=path.join(__dirname,'..','front-end');
 console.log(staticPath);
 app.use(express.static(staticPath))
@@ -19,6 +22,8 @@ app.use(express.static(staticPath))
 //     console.log('server running');
 //     res.send("running")
 // })
+
+
 
 app.use(userRoutes)
 
