@@ -1,0 +1,70 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- bootstraps and jquery cdn -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <title>LogIn</title>
+</head>
+
+<body>
+    <form class="form-horizontal" method="post">
+
+
+        <!-- Form Name -->
+        <legend style="text-align: center;">LogIn</legend>
+
+        <!-- Text input-->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="email">Email</label>
+            <div class="col-md-5">
+                <input id="email" name="email" type="text" placeholder="EMAIL" class="form-control input-md">
+
+            </div>
+        </div>
+
+        <!-- Text input-->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="password">password</label>
+            <div class="col-md-5">
+                <input type="password" id="password" name="password" type="text" placeholder="PASSWORD" class="form-control input-md">
+
+            </div>
+        </div>
+    </form>
+    <!-- Button -->
+    <div class="form-group">
+        <label class="col-md-4 control-label" for="login-btn"></label>
+        <div class="col-md-pull-4">
+            <button style="margin-left: 10px;" id="login-btn" name="login-btn" class="btn btn-primary">LogIn</button>
+            <button style="margin-left: 5px;" id="reset-btn" name="reset-btn" class="btn btn-primary">Reset</button>
+        </div>
+    </div>
+
+    <div style="justify-content: center; padding-left: 34%;">
+        <a style="padding-left: 15px;" href="#" class="ml-2">Forgot Password?</a>
+        <div>
+            Don't have an account?
+            <a href="./registeration.html" class="ml-2">Sign Up</a>
+        </div>
+        
+    </div>
+
+
+    <script>
+        
+        /*------ reset button ----*/
+        const resetBtn=document.getElementById('reset-btn')
+        resetBtn.addEventListener('click',(event)=>{
+            document.getElementById('email').value=''
+            document.getElementById('password').value=''
+            
+        })
+    </script>
+</body>
+
+</html>
