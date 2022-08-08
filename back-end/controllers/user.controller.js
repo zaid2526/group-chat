@@ -2,7 +2,9 @@
 
 const bcrypt=require('bcrypt')
 const jwt=require('jsonwebtoken')
+//models.......
 const User=require('../models/register');
+const Message=require('../models/chats');
 
 exports.postRegister=(req,res,next)=>{
     // console.log("req user",req.user)
@@ -107,9 +109,30 @@ exports.postLogIn=(req,res,next)=>{
 exports.getUsers = async (req, res) => {
     try {
         const users = await User.findAll();
-        console.log(users);
+        // console.log(users);
         return res.status(200).json({ users, success: true })
     } catch (err) {
         console.log(err);
     }
+}
+
+exports.postMessage= async (req,res,next)=>{
+    // console.log("req user",req.user);
+    const msg=req.body.msg;
+    const {name}=req.user
+    try{
+        const message=await req.user.createMessage({
+                                message:msg,
+                            });
+        console.log("message post",message);
+         res.status(201).json({
+            data:message,
+            message:'message send',
+            name:name
+        })
+    }catch(err){
+         res.status(400).json({message:`msg not sent`})
+    }
+    
+   
 }

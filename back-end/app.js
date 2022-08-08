@@ -7,7 +7,8 @@ const cookieParser=require('cookie-parser')
 
 //database and models....
 const sequelize = require('./util/database');
-
+const User=require('./models/register');
+const Message=require('./models/chats')
 
 //routes.........
 const userRoutes=require('./routes/user.routes')
@@ -29,6 +30,9 @@ app.use(express.static(staticPath))
 
 app.use(userRoutes)
 
+
+User.hasMany(Message);
+Message.belongsTo(User);
 
 sequelize
     .sync()

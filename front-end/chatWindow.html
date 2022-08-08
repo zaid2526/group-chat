@@ -51,6 +51,16 @@
       `
     }
 
+    async function sendMsg(event){
+    event.preventDefault();
+    const msg = event.target.msg.value
+    console.log("mssg",msg);
+    const obj = {msg}
+    const response = await axios.post('http://localhost:3030/message',obj)
+    console.log("respons",response)
+        // showMessage(response.data.name,msg)
+    
+}
 </script>
 </body>
 </html>
