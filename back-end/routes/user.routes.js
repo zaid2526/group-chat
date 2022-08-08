@@ -10,7 +10,7 @@ const router=express.Router();
 
 router.post('/register',userController.postRegister)
 
-router.post('/login',Authentication.auth, userController.postLogIn)
+router.post('/login', userController.postLogIn)
 
 
 module.exports= router;

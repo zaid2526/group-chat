@@ -30,7 +30,7 @@ exports.postRegister=(req,res,next)=>{
         })
         .then(encryptedPassword=>{
             // console.log("jsddgs",encryptedPassword);
-            const token=jwt.sign({email:email},process.env.PASSWORD_ENCRY_SECRET_KEY);
+            const token=jwt.sign({email:email},process.env.JWT_SECRET_KEY);
            
             return Register.create({
                 name:name,
@@ -62,7 +62,7 @@ exports.postLogIn=(req,res,next)=>{
     Register.findOne({where:{email:email }})
         .then(data=>{
             if(!data){
-                res.json({email:email,auth:false})
+                res.json({email:email,isUser:false})
             }else{
                 name=data.name;
                 id=data.id;
@@ -71,9 +71,10 @@ exports.postLogIn=(req,res,next)=>{
             
         })
         .then(validPassword=>{
+            // console.log("valid",validPassword);
             if(validPassword===true){
-                console.log("valid",validPassword);
-                token=jwt.sign({id:id,email:email},process.env.PASSWORD_ENCRY_SECRET_KEY)
+                
+                token=jwt.sign({id:id,email:email},process.env.JWT_SECRET_KEY)
                
                 // console.log("token Created",token);
                 res.cookie('jwt',token,{
@@ -86,7 +87,7 @@ exports.postLogIn=(req,res,next)=>{
                     name:name,
                     email:email,
                     auth:true,
-                    // secretToken:token
+                    secretToken:token
                 })
             }
             if(validPassword===false){
@@ -94,6 +95,8 @@ exports.postLogIn=(req,res,next)=>{
                     name:name,
                     email:email,
                     auth:false,
+                    message:'User not authorized'
+                
                 })
             }
         })
