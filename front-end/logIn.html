@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <!-- axios cdn -->
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js"></script>
+
     <title>LogIn</title>
 </head>
 
@@ -56,7 +59,34 @@
 
 
     <script>
-        
+        /*------ Login button ----*/
+        const loginBtn=document.getElementById('login-btn')
+        loginBtn.addEventListener('click',(event)=>{
+            
+            const email=document.getElementById('email').value;
+            const password=document.getElementById('password').value;
+            console.log("email: ", email);
+            console.log("password",password);
+            logInDetails={
+                email:email,
+                password:password
+            }
+            axios.post('http://localhost:3030/login',logInDetails)
+                .then(response=>{
+                    console.log("response",response);
+                    if(res.status===401){
+                        console.log("unath");
+                    }
+                    let {name,email,auth}=response.data
+                    if(auth){
+                        alert(`${name} logged In`);
+                    }
+                    if(!auth){
+                        alert(`Entered Incorrect Password`)
+                    }
+                    
+                }).catch(err=>{console.log(err);})
+        })
         /*------ reset button ----*/
         const resetBtn=document.getElementById('reset-btn')
         resetBtn.addEventListener('click',(event)=>{

@@ -1,5 +1,7 @@
-const bcrypt=require('bcrypt')
 
+
+const bcrypt=require('bcrypt')
+const jwt=require('jsonwebtoken')
 const Register=require('../models/register');
 
 exports.postRegister=(req,res,next)=>{
@@ -28,12 +30,14 @@ exports.postRegister=(req,res,next)=>{
         })
         .then(encryptedPassword=>{
             // console.log("jsddgs",encryptedPassword);
+            const token=jwt.sign({email:email},process.env.PASSWORD_ENCRY_SECRET_KEY);
            
             return Register.create({
                 name:name,
                 email:email,
                 phone:phone,
                 password:encryptedPassword, 
+                token:token
             })
            
         })
@@ -44,6 +48,54 @@ exports.postRegister=(req,res,next)=>{
                 isSucces:true,
                 message:`Successfuly signed up....!!`
             })
+        })
+        .catch(err=>{console.log(err);})
+}
+
+
+exports.postLogIn=(req,res,next)=>{
+    const { email, password}=req.body
+    let name;
+    let token;
+    let id;
+    // console.log("postLogIn",req.body);
+    Register.findOne({where:{email:email }})
+        .then(data=>{
+            if(!data){
+                res.json({email:email,auth:false})
+            }else{
+                name=data.name;
+                id=data.id;
+                return bcrypt.compare(password,data.password)
+            }
+            
+        })
+        .then(validPassword=>{
+            if(validPassword===true){
+                console.log("valid",validPassword);
+                token=jwt.sign({id:id,email:email},process.env.PASSWORD_ENCRY_SECRET_KEY)
+               
+                // console.log("token Created",token);
+                res.cookie('jwt',token,{
+                    // expires: new Date(Date.now() + 30000),
+                    httpOnly:true,
+                    secure:true
+                })
+
+                res.json({
+                    name:name,
+                    email:email,
+                    auth:true,
+                    // secretToken:token
+                })
+            }
+            if(validPassword===false){
+                res.json({
+                    name:name,
+                    email:email,
+                    auth:false,
+                })
+            }
         })
         .catch(err=>{console.log(err);})
 }

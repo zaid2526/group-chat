@@ -3,6 +3,7 @@ const path=require('path')
 
 const express=require('express')
 const bodyParser=require('body-parser')
+const cookieParser=require('cookie-parser')
 
 //database and models....
 const sequelize = require('./util/database');
@@ -15,6 +16,7 @@ const app=express()
 
 
 app.use(bodyParser.json())
+app.use(cookieParser())
 const staticPath=path.join(__dirname,'..','front-end');
 console.log(staticPath);
 app.use(express.static(staticPath))

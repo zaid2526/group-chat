@@ -25,6 +25,10 @@ const Register=sequelize.define('register',{
         type:Sequelize.STRING,
         allowNull:false
     },
+    token:{
+        type:Sequelize.STRING,
+        allowNull:false
+    },
     
     
 
