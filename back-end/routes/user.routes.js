@@ -12,5 +12,7 @@ router.post('/register',userController.postRegister)
 
 router.post('/login', userController.postLogIn)
 
+router.get('/users',Authentication.auth, userController.getUsers)
+
 
 module.exports= router;

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- axios cdn -->
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js"></script>
+
+    <title>Chat Window</title>
+</head>
+<body>
+    <h2 id="app">Chat Window</h2>
+
+    <div id="chats" style="align-items: center; width: 65%; height: 45%; background-color: rgb(166, 201, 231); list-style: none;">
+    </div>
+
+<footer style="margin-top: 15%; ">
+    <form onsubmit="sendMsg(event)">
+        <label for="msg"></label>
+        <input type="text" name="msg">
+        <button type="submit" >Send</button>
+    </form>
+</footer>
+<script>
+    window.addEventListener('load',users =>{
+    axios.get('http://localhost:3030/users')
+      .then(response => {
+        console.log(response);
+        if(response.status == 200){
+            response.data.users.forEach(user => {
+                showUsers(user)
+                
+            });
+        }else {
+            throw new Error();
+        }
+      })
+      .catch(err => {
+        console.log(err)
+      })
+    
+      
+    })
+    function showUsers(user){
+    const parentNode = document.getElementById('chats');
+    parentNode.innerHTML += `
+      <li>
+        ${user.name} join...
+      </li>
+      `
+    }
+
+</script>
+</body>
+</html>

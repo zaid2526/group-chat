@@ -2,7 +2,7 @@
 
 const bcrypt=require('bcrypt')
 const jwt=require('jsonwebtoken')
-const Register=require('../models/register');
+const User=require('../models/register');
 
 exports.postRegister=(req,res,next)=>{
     // console.log("req user",req.user)
@@ -14,7 +14,7 @@ exports.postRegister=(req,res,next)=>{
     // })
     
 
-    Register.findOne({where:{email:email}})
+    User.findOne({where:{email:email}})
         .then(data=>{
             if(data){
                res.json({
@@ -32,7 +32,7 @@ exports.postRegister=(req,res,next)=>{
             // console.log("jsddgs",encryptedPassword);
             const token=jwt.sign({email:email},process.env.JWT_SECRET_KEY);
            
-            return Register.create({
+            return User.create({
                 name:name,
                 email:email,
                 phone:phone,
@@ -59,7 +59,7 @@ exports.postLogIn=(req,res,next)=>{
     let token;
     let id;
     // console.log("postLogIn",req.body);
-    Register.findOne({where:{email:email }})
+    User.findOne({where:{email:email }})
         .then(data=>{
             if(!data){
                 res.json({email:email,isUser:false})
@@ -101,4 +101,15 @@ exports.postLogIn=(req,res,next)=>{
             }
         })
         .catch(err=>{console.log(err);})
+}
+
+
+exports.getUsers = async (req, res) => {
+    try {
+        const users = await User.findAll();
+        console.log(users);
+        return res.status(200).json({ users, success: true })
+    } catch (err) {
+        console.log(err);
+    }
 }
