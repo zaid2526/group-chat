@@ -29,7 +29,7 @@
     window.addEventListener('load',users =>{
     axios.get('http://localhost:3030/users')
       .then(response => {
-        console.log(response);
+        // console.log(response);
         if(response.status == 200){
             response.data.users.forEach(user => {
                 showUsers(user)
@@ -61,23 +61,25 @@
       const obj = {msg}
       const response = await axios.post('http://localhost:3030/message',obj)
 
-        showMessage(response.data.name,msg)
+        // showMessage(response.data.name,msg)
+        event.target.msg.value='';
     }
+    const parentNode = document.getElementById('msg');
     function showMessage(name,msg){
-
-      const parentNode = document.getElementById('msg');
-
       parentNode.innerHTML += `<li>${name}:${msg}</li>`
+      
     }
 
     window.addEventListener('load',users =>{
-    axios.get('http://localhost:3030/message')
+      const timer=setInterval(()=>{
+        // clearTimeout(timer)
+        axios.get('http://localhost:3030/message')
       .then(response => {
-        console.log(response);
-        const {name,msgs}=response.data
+        const {msgs}=response.data
+        parentNode.innerHTML='';
         if(response.status == 200){
             msgs.forEach(msg => {
-              showMessage(name,msg.message)
+              showMessage(msg.register.name,msg.message)
             });
         }else {
             throw new Error();
@@ -86,6 +88,8 @@
       .catch(err => {
         console.log(err)
       })
+      },500)
+    
     })
 </script>
 </body>

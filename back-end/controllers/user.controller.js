@@ -5,6 +5,7 @@ const jwt=require('jsonwebtoken')
 //models.......
 const User=require('../models/register');
 const Message=require('../models/chats');
+const Register = require('../models/register');
 
 exports.postRegister=(req,res,next)=>{
     // console.log("req user",req.user)
@@ -140,7 +141,12 @@ exports.postMessage= async (req,res,next)=>{
 exports.getMessage= async(req,res,next)=>{
     try{
         const {name}=req.user;
-        const msgs=await req.user.getMessages();
+        // const msgs=await req.user.getMessages();
+        const msgs=await Message.findAll({include:[{
+            model:Register,
+            attributes:['id','name']
+        }]})
+        // console.log("msgs>>>>>>>",msgs);
         res.status(200).json({msgs,name,success:true})
     }catch(err){
         res.status(404).json({success:false})
