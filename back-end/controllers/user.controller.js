@@ -136,3 +136,14 @@ exports.postMessage= async (req,res,next)=>{
     
    
 }
+
+exports.getMessage= async(req,res,next)=>{
+    try{
+        const {name}=req.user;
+        const msgs=await req.user.getMessages();
+        res.status(200).json({msgs,name,success:true})
+    }catch(err){
+        res.status(404).json({success:false})
+    }
+    
+}
