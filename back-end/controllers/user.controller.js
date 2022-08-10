@@ -3,6 +3,7 @@
 const bcrypt=require('bcrypt')
 const jwt=require('jsonwebtoken')
 //models.......
+const {Op}=require('sequelize')
 const User=require('../models/register');
 const Message=require('../models/chats');
 const Register = require('../models/register');
@@ -140,12 +141,17 @@ exports.postMessage= async (req,res,next)=>{
 
 exports.getMessage= async(req,res,next)=>{
     try{
+        const lastMsgId=req.params.lastMsgId
+        console.log("lastMsgId",lastMsgId);
         const {name}=req.user;
         // const msgs=await req.user.getMessages();
-        const msgs=await Message.findAll({include:[{
-            model:Register,
-            attributes:['id','name']
-        }]})
+        const msgs=await Message.findAll({
+            where:{id:{ [Op.gt]: lastMsgId }},
+            include:[{
+                model:Register,
+                attributes:['id','name']
+            }]
+        })
         // console.log("msgs>>>>>>>",msgs);
         res.status(200).json({msgs,name,success:true})
     }catch(err){
@@ -153,3 +159,4 @@ exports.getMessage= async(req,res,next)=>{
     }
     
 }
+

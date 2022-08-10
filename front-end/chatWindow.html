@@ -69,16 +69,22 @@
       parentNode.innerHTML += `<li>${name}:${msg}</li>`
       
     }
-
+    localStorage.setItem("lastMsgId", 0);
+    
+    
     window.addEventListener('load',users =>{
       const timer=setInterval(()=>{
-        // clearTimeout(timer)
-        axios.get('http://localhost:3030/message')
+        const lastMsgId=localStorage.getItem('lastMsgId')
+        console.log('lastMsgId',lastMsgId);
+        axios.get(`http://localhost:3030/message/${lastMsgId}`)
       .then(response => {
         const {msgs}=response.data
-        parentNode.innerHTML='';
+        // parentNode.innerHTML='';
         if(response.status == 200){
+          console.log(msgs);
             msgs.forEach(msg => {
+              
+              localStorage.setItem("lastMsgId", msg.id);
               showMessage(msg.register.name,msg.message)
             });
         }else {
@@ -89,6 +95,10 @@
         console.log(err)
       })
       },500)
+
+      // setTimeout(()=>{
+      //   clearTimeout(timer)
+      // },2000)
     
     })
 </script>
