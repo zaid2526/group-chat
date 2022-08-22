@@ -9,6 +9,9 @@ const cookieParser=require('cookie-parser')
 const sequelize = require('./util/database');
 const User=require('./models/register');
 const Message=require('./models/chats')
+const Group=require('./models/group');
+const UserGroup=require('./models/userGroup')
+const UserGroupMessage=require('./models/userGroupMessage')
 
 //routes.........
 const userRoutes=require('./routes/user.routes')
@@ -33,6 +36,14 @@ app.use(userRoutes)
 
 User.hasMany(Message);
 Message.belongsTo(User);
+
+User.belongsToMany(Group,{through:UserGroup});
+Group.belongsToMany(User,{through:UserGroup});
+
+Group.hasMany(UserGroupMessage);
+UserGroupMessage.belongsTo(Group);
+User.hasMany(UserGroupMessage);
+UserGroupMessage.belongsTo(User);
 
 sequelize
     .sync()

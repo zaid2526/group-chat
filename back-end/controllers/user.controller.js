@@ -7,6 +7,10 @@ const {Op}=require('sequelize')
 const User=require('../models/register');
 const Message=require('../models/chats');
 const Register = require('../models/register');
+const Group = require('../models/group');
+const UserGroup=require('../models/userGroup')
+const UserGroupMessage=require('../models/userGroupMessage');
+const { json } = require('body-parser');
 
 exports.postRegister=(req,res,next)=>{
     // console.log("req user",req.user)
@@ -159,4 +163,75 @@ exports.getMessage= async(req,res,next)=>{
     }
     
 }
+
+exports.createGroup=async (req,res,next)=>{
+    try{    
+        // const groupName=req.body.groupName;
+        const {groupName}=req.body;
+        console.log(groupName);
+        // const group=await req.user.getGroups()
+        // console.log(">>>>>>>>",group);
+        req.user.createGroup({
+                groupName:groupName
+            },{
+                through:{isAdmin:true}
+            })
+            .then(group=>{
+                res.json({group})
+            })
+    }catch(err){
+        console.log("errrr>>>",err);
+    }
+
+    
+}
+
+exports.addIntoGroup=async (req,res,next)=>{
+    const groupId=req.params.groupId;
+    const {id,email}=req.body
+    console.log("groupId",groupId);
+    const group= await Group.findOne({where:{id:groupId}})
+    
+    const user=await  User.findOne({where:{id:id}})
+    user.addGroup(group,{through:UserGroup})
+        .then(()=>{
+            console.log("added");
+        })
+        .catch(err=>{console.log(err);})
+ 
+}
+
+exports.getAllGroup=async (req,res,next)=>{
+    const {id}=req.user;
+    console.log(id);
+    let group= await req.user.getGroups()
+    res.json({group})
+}
+
+exports.postUserGroupMessage= async (req,res,next)=>{
+    // console.log("req user",req.user);
+    const {msg,id,email}=req.body
+    const groupId=req.params.groupId;
+
+    console.log("groupdetails",msg,id,email,groupId);
+
+    const message=await UserGroupMessage.create({
+        message:msg,
+        groupId:groupId,
+        registerId:id
+        
+    });
+    res.json({message})
+    // console.log(message);
+    
+}
+exports.getGroupMessage= async(req,res,next)=>{
+
+        const groupId=req.params.groupId;
+        const msgs=await UserGroupMessage.findAll({where:{groupId:groupId}})
+        console.log("msgs>>>>>>>",msgs[0].groupId);
+        res.status(200).json({msgs,success:true})
+    
+}
+
 

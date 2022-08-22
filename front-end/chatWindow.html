@@ -25,7 +25,25 @@
         <button type="submit" >Send</button>
     </form>
 </footer>
+
+
+<button type="submit" id="createGroup">Create a group</button>
+<form id="chatGroup" style="display: none;" onsubmit="createGroup(event)">
+  <label for="group"></label>
+  <input type="text" name="group" placeholder="group name">
+  <button type="submit" >Create Group</button>
+</form>
+<button type="submit" id="getgroup">get groups</button>
 <script>
+  document.getElementById('getgroup').addEventListener('click',(e)=>{
+    axios.post('http://localhost:3030/getgroup')
+      .then(res=>{
+        console.log("res",res);
+      })
+      .catch(err=>{
+        console.log(err);
+      })
+  })
     window.addEventListener('load',users =>{
     axios.get('http://localhost:3030/users')
       .then(response => {
@@ -96,11 +114,28 @@
       })
       },500)
 
-      // setTimeout(()=>{
-      //   clearTimeout(timer)
-      // },2000)
+      setTimeout(()=>{
+        clearTimeout(timer)
+      },2000)
     
     })
+
+
+    document.getElementById('createGroup').addEventListener('click',(e)=>{
+      console.log('group');
+      document.getElementById('chatGroup').style.display='block';
+      document.getElementById('createGroup').style.display='none'
+    })
+    async function createGroup(event){
+      event.preventDefault();
+      const groupName = event.target.group.value
+
+      const obj = {groupName}
+      const response = await axios.post('http://localhost:3030/creategroup',obj)
+      console.log(response);
+        // showMessage(response.data.name,msg)
+        event.target.group.value='';
+    }
 </script>
 </body>
 </html>

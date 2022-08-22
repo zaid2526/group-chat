@@ -11,10 +11,11 @@ exports.auth=(req,res,next)=>{
         // console.log("verifyUser",verifyUser);
         Register.findOne({where:{email:verifyUser.email}})
             .then(user=>{
+
+                    // console.log("user",user);
+                    req.user=user;
+                    next();
                 
-                // console.log("user",user);
-                req.user=user;
-                next();
             })
             .catch(err=>{console.log(err);})
 
