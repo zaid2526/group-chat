@@ -42,6 +42,7 @@ Group.belongsToMany(User,{through:UserGroup});
 
 Group.hasMany(UserGroupMessage);
 UserGroupMessage.belongsTo(Group);
+
 User.hasMany(UserGroupMessage);
 UserGroupMessage.belongsTo(User);
 

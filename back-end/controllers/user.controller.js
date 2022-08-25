@@ -186,19 +186,54 @@ exports.createGroup=async (req,res,next)=>{
     
 }
 
-exports.addIntoGroup=async (req,res,next)=>{
-    const groupId=req.params.groupId;
-    const {id,email}=req.body
-    console.log("groupId",groupId);
-    const group= await Group.findOne({where:{id:groupId}})
-    
-    const user=await  User.findOne({where:{id:id}})
-    user.addGroup(group,{through:UserGroup})
-        .then(()=>{
+exports.addIntoGroup = async (req, res, next) => {
+    try {
+        const groupId = req.params.groupId;
+        const { userId } = req.body
+        const {email}=req.user;
+        console.log("groupId", userId, groupId);
+        const group = await req.user.getGroups({ where: { id: groupId } })
+        const isAdmin=group[0].usergroup.isAdmin
+        console.log(isAdmin);
+        // res.json({ group })
+        
+        if(isAdmin){
+            // console.log(user);
+            const user = await User.findOne({ where: { id: userId } })
+            if(!user){
+                res.json({user:false})
+            }
+            const groupAdded=await user.addGroup(group,{through:UserGroup})
             console.log("added");
-        })
-        .catch(err=>{console.log(err);})
- 
+            res.json({groupAdded,added:true,email})
+        }
+        if(!isAdmin){
+            res.json({added:false,email})
+        }
+        
+    } catch (err) {
+        console.log("catch err", err);
+    }
+}
+exports.removeFromGroup=async(req,res,next)=>{
+    console.log("removed from group");
+    const {userId,groupId}=req.body;
+    console.log(typeof userId,typeof groupId);
+    const {id}=req.user;
+    console.log(id);
+    const user=await User.findByPk(userId)
+    // const group=await req.user.getGroups({where:{id:groupId}});
+
+
+    // const user =await group.getUsers({where:{id:userId}})
+    let group=await user.getGroups({where:{id:groupId}})
+
+    let removed=await user.destroy({where:{id:userId},include:[{model:Group}]})
+    // console.log(group);
+    // console.log(user);
+
+
+    res.json({group,user,removed})
 }
 
 exports.getAllGroup=async (req,res,next)=>{
@@ -210,10 +245,12 @@ exports.getAllGroup=async (req,res,next)=>{
 
 exports.postUserGroupMessage= async (req,res,next)=>{
     // console.log("req user",req.user);
-    const {msg,id,email}=req.body
+    const {id,email,name}=req.user;
+    const {msg}=req.body
+    // console.log(msg,id,email);
     const groupId=req.params.groupId;
 
-    console.log("groupdetails",msg,id,email,groupId);
+    // console.log("groupdetails",msg,id,email,groupId);
 
     const message=await UserGroupMessage.create({
         message:msg,
@@ -221,17 +258,112 @@ exports.postUserGroupMessage= async (req,res,next)=>{
         registerId:id
         
     });
-    res.json({message})
+    res.json({message,name,msg})
     // console.log(message);
     
 }
 exports.getGroupMessage= async(req,res,next)=>{
-
-        const groupId=req.params.groupId;
-        const msgs=await UserGroupMessage.findAll({where:{groupId:groupId}})
-        console.log("msgs>>>>>>>",msgs[0].groupId);
-        res.status(200).json({msgs,success:true})
+    const groupId=req.params.groupId;
+    const msgs=await UserGroupMessage.findAll({
+        where:{groupId:groupId},
+        include:[{
+            model:User,
+            attributes:['name','email']
+        }]
+    })
+    // const msgs=await req.user.getUserGroupMessages({where:{groupId:groupId}})
+    // console.log("msgs>>>>>>>",msgs[0].groupId);
+    res.status(200).json({msgs,success:true})
     
 }
 
+exports.getGroupUsers= async (req,res,next)=>{
+    const groupId=req.params.groupId;
+    const group= await req.user.getGroups({
+        where:{id:groupId},
+        include:[{
+            model:User,
+            attributes:['id','name','email']
+        }]
+    })
+    // console.log("group>>>>>",group);
+    // const users= await group.getUser();
+    // console.log(users);
+    
+    res.json({group})
+}
+
+exports.createAdmin=async (req,res,next)=>{
+    const groupId=req.params.groupId;
+    const {userId}=req.body
+    
+    const group= await req.user.getGroups({
+        where:{id:groupId},
+        include:[{
+            model:User,
+            attributes:['id','name','email']
+        }]
+    })
+    // const user=await group.getUsers();
+
+    // const {isAdmin}=group[0].usergroup
+    group[0].registers.forEach(user => {
+        if(user.usergroup.registerId==userId){
+            if(user.usergroup.isAdmin===false){
+                // req.user.addGroup(group[0],{through:{isAdmin:true}})
+                user.usergroup.update({isAdmin:true})
+                    .then(()=>{
+                        res.json({group,nowAdmin:true})
+                    })
+                    .catch(err=>{
+                        console.log(err);
+                    })
+                
+            }else{
+                res.json({group,nowAdmin:false})
+            }
+            
+        }
+        
+        
+    });
+    
+    
+}
+
+exports.removeAdmin=async (req,res,next)=>{
+    const groupId=req.params.groupId;
+    const {userId}=req.body
+    
+    const group= await req.user.getGroups({
+        where:{id:groupId},
+        include:[{
+            model:User,
+            attributes:['id','name','email']
+        }]
+    })
+
+    group[0].registers.forEach(user => {
+        if(user.usergroup.registerId==userId){
+            if(user.usergroup.isAdmin===true){
+                // req.user.addGroup(group[0],{through:{isAdmin:true}})
+                user.usergroup.update({isAdmin:false})
+                    .then(()=>{
+                        res.json({group,nowAdmin:false})
+                    })
+                    .catch(err=>{
+                        console.log(err);
+                    })
+                
+            }else{
+                res.json({group,nowAdmin:true})
+            }
+            
+        }
+        
+        
+    });
+    
+
+}
 

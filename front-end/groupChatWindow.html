@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- axios cdn -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js"></script>
+  <link rel="stylesheet" href="./css/groupWindow.css">
+  <title>Chat Window</title>
+</head>
+
+<body>
+  <h2 id="app">GroupChat Window</h2>
+
+  <div id="chats"
+    style="align-items: center; width: 65%; height: 45%; background-color: rgb(166, 201, 231); list-style: none;">
+  </div>
+  <div id="msg" style="list-style:none;">
+
+  </div>
+
+  <footer style="margin-top: 15%; ">
+    <form onsubmit="sendMsg(event)">
+      <label for="msg"></label>
+      <input type="text" name="msg">
+      <button type="submit">Send</button>
+    </form>
+  </footer>
+
+
+  <section id="groupWindow" class="container">
+    <h2>Group Window</h2>
+    <div class='group-details'>
+      <ul id="group-list" style="list-style: none;">
+        <!-- added the list of all groups when clock on button-->
+      </ul>
+    </div>
+    <h3 id="userSection" hidden>Users</h3>
+    <div id="groupUsers" style="border: 2px; background-color: aliceblue; display: none;">
+      <ul style="list-style: none;">
+        <div>
+          <!-- <li>username</li>
+          <button type="submit" id="makeAdmin">Create Admin</button>
+          <button type="submit" id="removeAdmin">Remove Admin</button> -->
+        </div>
+        <hr>
+      </ul>
+    </div>
+  </section>
+  <button type="submit" id="getgroup">get groups</button>
+  <hr>
+  <div id="addUserInGroup" hidden>
+    <h4></h4>
+    <input type="text" id="userId" placeholder="UserID"><br>
+    <input type="text" id="email" placeholder="Email ID"><br>
+    <button type="submit" id="addUser">ADD</button>
+  </div>
+  
+
+  <script>
+
+
+
+  </script>
+  <script src="./js/groupWindow.js"></script>
+</body>
+
+</html>

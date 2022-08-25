@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- axios cdn -->
    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js"></script>
-
+    <link rel="stylesheet" href="./css/groupWindow.css">
     <title>Chat Window</title>
 </head>
 <body>
@@ -33,18 +33,24 @@
   <input type="text" name="group" placeholder="group name">
   <button type="submit" >Create Group</button>
 </form>
-<button type="submit" id="getgroup">get groups</button>
+<section id="groupWindow" class="container">
+  <h2>Group Window</h2>
+  <div class='group-details'>
+      <ul id="group-list" style="list-style: none;">
+        <!-- added the list of all groups when clock on button-->
+      </ul>
+  </div>
+</section>
+<button type="submit" id="getgroup">Show All Groups</button>
+<hr>
+<!-- <h4>remove any user from group</h4>
+<input type="text" id="userId" placeholder="UserID">
+<input type="text" id="groupId" placeholder="GroupID">
+<button type="submit" id="removeUser">remove</button> -->
+
 <script>
-  document.getElementById('getgroup').addEventListener('click',(e)=>{
-    axios.post('http://localhost:3030/getgroup')
-      .then(res=>{
-        console.log("res",res);
-      })
-      .catch(err=>{
-        console.log(err);
-      })
-  })
-    window.addEventListener('load',users =>{
+    
+  window.addEventListener('load',users =>{
     axios.get('http://localhost:3030/users')
       .then(response => {
         // console.log(response);
@@ -89,7 +95,7 @@
     }
     localStorage.setItem("lastMsgId", 0);
     
-    
+    //get all messages without group
     window.addEventListener('load',users =>{
       const timer=setInterval(()=>{
         const lastMsgId=localStorage.getItem('lastMsgId')
@@ -136,6 +142,26 @@
         // showMessage(response.data.name,msg)
         event.target.group.value='';
     }
+
+    //getGroups on group chat window...
+    document.getElementById('getgroup').addEventListener('click',(e)=>{
+      window.location.href='./groupChatWindow.html'
+    })
+
+    //remove user from group
+    // document.getElementById('removeUser').addEventListener('click',(e)=>{
+    //   const obj={
+    //     userId:document.getElementById('userId').value,
+    //     groupId:document.getElementById('groupId').value,
+    //   }
+    //   axios.post('http://localhost:3030/removefromgroup',obj)
+    //     .then(response=>{
+    //       console.log("deleted",response);
+    //     })
+    // })
+
+
 </script>
+<!-- <script src="./js/groupWindow.js"></script> -->
 </body>
 </html>
